@@ -144,6 +144,8 @@ METRIC_INSTRUMENTED_SERVICE_PORTS = [
     ("package-upload", 9100),
     ("package-search", 9099),
 ]
+
+SERVICE_CONF_SERVICES = ("landscape", "api", "message-server", "pingserver")
 """
 Default ports for Landscape services in a self-hosted deployment.
 
@@ -334,6 +336,22 @@ class LandscapeServerCharm(CharmBase):
             ],
         )
 
+    def _on_configure_workers_action(self, event: ActionEvent):
+        service = event.params.get("service")
+        workers = event.params.get("workers")
+        if service not in SERVICE_CONF_SERVICES:
+            event.fail(f"Parameter 'service' must be one of {", ".join(SERVICE_CONF_SERVICES)}.")
+            return
+        if workers <= 0:
+            event.fail(f"Parameter 'workers' must be greater than or equal to 1.")
+            return
+        config_update = {
+            service: {
+                "workers": str(workers),
+            },
+        }
+        update_service_conf(config_update)
+
     def _generate_scrape_configs(self) -> list[dict]:
         """
         Return a scrape config for every metric-instrumented Landscape service.
@@ -420,7 +438,7 @@ class LandscapeServerCharm(CharmBase):
 
         service_conf_updates = {
             service: {"workers": str(workers)}
-            for service in ("landscape", "api", "message-server", "pingserver")
+            for service in SERVICE_CONF_SERVICES
         }
 
         if root_url:

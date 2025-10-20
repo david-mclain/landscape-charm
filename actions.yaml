@@ -33,3 +33,16 @@ disable-ubuntu-installer-attach:
   description: |
     Uninstall the `landscape_ubuntu_installer_attach` package and remove the
     frontend on HAProxy.
+configure-workers:
+  description: |
+    Configure the amount of workers for a provided service.
+  params:
+    service:
+      type: string
+      description: Service to update amount of workers for.
+    workers:
+      type: integer
+      description: Amount of workers to set for service.
+  required:
+    - service
+    - workers
