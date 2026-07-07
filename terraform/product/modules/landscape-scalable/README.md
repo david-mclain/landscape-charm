@@ -65,7 +65,7 @@ This module uses the [Landscape Server charm module](https://github.com/canonica
 
 | Name | Version |
 |------|---------|
-| <a name="provider_juju"></a> [juju](#provider\_juju) | 1.0.0 |
+| <a name="provider_juju"></a> [juju](#provider\_juju) | ~> 1.0 |
 
 ## Modules
 
